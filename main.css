@@ -1,0 +1,864 @@
+#game-frame {
+  display: inline-block;
+  background: transparent;
+  border: 6px solid rgb(68, 74, 110);
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  overflow: hidden;
+}
+html {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  /* 使用系统中文无衬线，避免像素/马赛克风格 */
+  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 12px;
+  background: #333;
+  /* background image removed */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding: 0;
+  margin: 0;
+}
+
+body:hover {
+  cursor: default;
+}
+
+#holder {
+  color: #333;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100%;
+  opacity: 0;
+  transition: 2s;
+}
+
+#holder h1 {
+  color: rgb(187, 186, 186);
+}
+
+#placeholder-window { display: none; }
+
+#how-to {
+  width: 800px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+#tutorial-window {
+  display: flex;
+  width: 160px;
+  height: 560px;
+  transition: 2s;
+  opacity: 0;
+  z-index: 0;
+}
+
+#tutorial-slide {
+  border-radius: 0px 5px 5px 0px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 280px;
+  transition: 0.5s;
+}
+
+#tutorial-slide:hover {
+  cursor: pointer;
+}
+
+#tutorial-text {
+  color: #333;
+  padding: 10px;
+  text-align: center;
+  transition: 0.5s;
+}
+
+#tutorial-text p {
+  line-height: 1.3em;
+}
+
+#tutorial-icon img {
+  position: absolute;
+  right: 5px;
+  top: 123px;
+  filter: invert(20%);
+  width: 30px;
+  height: 30px;
+}
+
+#hotkeys-slide {
+  border-radius: 0px 5px 5px 0px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 280px;
+  height: 280px;
+  transition: 0.5s;
+}
+
+#hotkeys-icon img {
+  position: absolute;
+  right: 5px;
+  top: 123px;
+  filter: invert(20%);
+  width: 30px;
+  height: 30px;
+}
+
+#hotkeys-slide:hover {
+  cursor: pointer;
+}
+
+#hotkeys-text {
+  color: #333;
+  padding: 10px;
+  transition: 0.5s;
+}
+
+#hotkeys-text h4 {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+#hotkeys-text ul {
+  list-style: none;
+  padding: 0px;
+}
+
+#hotkeys-text li {
+  padding-top: 5px;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.open {
+  background-color: rgb(174, 172, 172);
+  width: 160px;
+  animation: slide-in 0.5s forwards;
+  -webkit-animation: slide-in 0.5s forwards;
+}
+
+.open:hover {
+  background-color: rgb(155, 154, 154);
+}
+
+.closed {
+  background-color: rgb(155, 154, 154);
+  width: 160px;
+  animation: slide-out 0.5s forwards;
+  -webkit-animation: slide-out 0.5s forwards;
+}
+
+.closed:hover {
+  background-color: rgb(174, 172, 172);
+}
+
+#game-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 55px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  background: rgb(68, 74, 110);
+  border-radius: 6px 6px 0 0;
+  opacity: 0;
+  transition: 2s;
+}
+
+#game-controls > #info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#game-controls > #info .info-tile {
+  height: 32px;
+  padding: 0 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+}
+
+#game-controls > #info .info-tile h4,
+#game-controls > #info .info-tile p {
+  margin: 0;
+}
+
+/* three-column layout for left info, canvas center, right details */
+#layout-columns {
+  display: grid;
+  grid-template-columns: 180px auto 280px;
+  grid-template-rows: auto;
+  gap: 0;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#center-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#left-sidebar,
+#right-sidebar {
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+  overflow: auto;
+}
+
+#top-left-controls {
+  display: flex;
+  align-items: center;
+}
+
+#play-button {
+  position: absolute;
+  top: 28%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 235px;
+  height: 125px;
+  background-color: inherit;
+  background-repeat: no-repeat;
+  z-index: 2;
+  outline: none;
+  border: none;
+  /* opacity: 0; */
+  transition: 0.5s;
+}
+
+#play-button:hover {
+  cursor: pointer;
+}
+
+#game-info {
+  position: absolute;
+  top: 52%;
+  width: 90%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  background-color: rgba(187, 186, 186, 0.5);
+  background-repeat: no-repeat;
+  z-index: 2;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+}
+
+#game-info > ul {
+  display: flex;
+}
+
+#game-info > ul > li {
+  list-style: none;
+  font-size: 11px;
+  margin-right: 15px;
+}
+
+#game-info > h3 {
+  margin-top: 45px;
+}
+
+#how-to {
+  width: 800px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+#audio-button {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+#audio-button:hover {
+  cursor: pointer;
+}
+
+#audio-button-img {
+  width: 22px;
+  height: 22px;
+}
+
+.audio-on {
+  filter: invert(70%);
+}
+
+.audio-off {
+  filter: invert(20%);
+}
+
+#wave-button {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 140px;
+  background-color: rgb(61, 67, 101);
+  border-radius: 0px 5px 0 0;
+  color: rgb(187, 186, 186);
+  transition: 0.5s;
+}
+
+.clickable:hover {
+  cursor: pointer;
+  background: rgb(120, 128, 171) !important;
+}
+
+#wave-button > div {
+  z-index: 1;
+}
+
+#wave-button > span {
+  position: absolute;
+  top: 0;
+  background: rgb(120, 128, 171);
+  border-radius: 5px;
+  height: 100%;
+  z-index: 0;
+}
+
+#canvas-wrapper {
+  display: block;
+  line-height: 0;
+  background: rgb(186, 186, 186);
+}
+
+#canvas-wrapper > canvas {
+  display: block;
+  z-index: 1;
+  transition: 1s;
+  width: auto;
+  height: auto;
+  /* 仅图像保留清晰度，禁用像素化避免文本/UI显得马赛克 */
+  image-rendering: auto;
+}
+
+#content-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px 15px;
+  gap: 10px;
+  background: rgb(68, 74, 110);
+  border-radius: 0 0 6px 6px;
+  opacity: 0;
+  transition: 2s;
+  position: relative;
+  z-index: 4;
+}
+
+/* Hover 反馈：升级与出售按钮 */
+#edit-tower-buttons .edit-button:hover {
+  background: rgb(120, 128, 171);
+  cursor: pointer;
+}
+
+#info {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 0;
+  flex: 1;
+  min-width: 0;
+  gap: 10px;
+}
+
+.info-tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 0;
+  margin: 0px;
+  color: rgb(187, 186, 186);
+  height: 42px;
+}
+
+/* #info-bits {
+  width: 160px;
+} */
+
+.info-tile h4 {
+  text-align: center;
+  padding: 0px;
+  margin: 0px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: inherit;
+}
+
+.info-tile p {
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: inherit;
+}
+
+.flashing {
+  animation-name: flash;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+#spacer-div-1 {
+  width: 15px;
+}
+
+/* #mute-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#mute-button img {
+  width: 25px;
+  height: 25px;
+  padding: 10px;
+}
+
+#mute-button img:hover {
+  cursor: pointer;
+}
+
+.mute-off {
+  filter: invert(65%);
+}
+
+.mute-on {
+  filter: invert(19%);
+} */
+
+#towers {
+  color: rgb(187, 186, 186);
+  display: flex;
+  flex: 0 0 auto;
+  height: 50px;
+  padding: 0;
+  background: transparent;
+  overflow: visible;
+  min-width: 260px; /* 4*50 + 60 margins */
+}
+
+#towers > div {
+  text-align: center;
+  width: 50px;
+  height: 50px;
+  margin: 0px 8px;
+  border-radius: 10%;
+}
+
+#towers > div:first-child { margin-left: 0; }
+#towers > div:last-child { margin-right: 0; }
+
+#towers canvas {
+  width: 50px;
+  height: 50px;
+  /* 保持图标清晰但不强制像素化，防止文本渲染受影响 */
+  image-rendering: auto;
+  display: block;
+}
+
+#towers > div:hover {
+  background: rgb(187, 186, 186);
+}
+
+#towers > div:active {
+  background: rgb(136, 136, 136);
+}
+
+#towers > div > img {
+  padding-top: -15px;
+  width: 50px;
+  height: 50px;
+}
+
+#towers > div > img:hover {
+  cursor: pointer;
+}
+
+#towers p {
+  margin: 10px 0px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: inherit;
+}
+
+#right-bottom-pane {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  flex: 0 0 auto;
+}
+
+#tower-details {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 10px;
+  background: transparent;
+}
+
+.detail-tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 0px 8px;
+  margin: 0px;
+  color: rgb(187, 186, 186);
+  min-height: 50px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+}
+
+.detail-tile h5 {
+  margin: 10px 0 6px;
+  font-size: 10px;
+}
+
+.detail-tile p {
+  margin: 0px 0 10px;
+  padding: 0px;
+  font-size: 10px;
+}
+
+#edit-tower-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 1 1 auto;
+  height: 44px;
+  margin-left: 10px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.edit-button {
+  transition: 0.5s;
+}
+
+#sell-button {
+  border-radius: 4px;
+}
+
+#edit-tower-buttons h5 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px;
+  padding: 0 8px;
+  height: 100%;
+  min-width: 64px;
+  background-color: rgb(61, 67, 101);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+#auto-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  color: rgb(187, 186, 186);
+  width: 80px;
+}
+
+#auto-container input {
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  right: 0;
+  height: 25px;
+  width: 25px;
+  background-color: rgb(61, 67, 101);
+}
+
+#auto-container input:checked ~ .checkmark {
+  background-color: rgb(187, 186, 186);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+#auto-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+#auto-container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid rgb(68, 74, 110);
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+#game-over-screen {
+  display: flex;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: #2c9e16;
+  transition: 2s;
+  opacity: 0;
+  z-index: 2;
+}
+
+#game-over-title {
+  display: none;
+  color: #333;
+  font-size: 70px;
+  margin: 0px;
+  transition: 1s;
+}
+
+#score-terminal {
+  display: none;
+  position: fixed;
+  align-items: center;
+  flex-direction: column;
+  top: 55%;
+  margin: 10px;
+  transition: 2s;
+  opacity: 0;
+}
+
+#local-top {
+  color: #fff;
+}
+
+#local-score {
+  color: 2c9e16;
+}
+
+#score-terminal > h3 {
+  color: rgb(171, 171, 171);
+  font-size: 30px;
+  margin: 20px 0px;
+}
+
+.scores {
+  display: flex;
+}
+
+.score-div {
+  padding: 0px 20px;
+}
+
+.score-div:first-child {
+  text-align: center;
+}
+
+.score-div:last-child {
+  text-align: center;
+}
+
+.score-div > h2 {
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.scores ul {
+  color: #fff;
+  padding: 0px;
+  list-style: none;
+  min-width: 80px;
+}
+
+.scores li {
+  font-size: 16px;
+  padding: 5px 0px;
+}
+
+.name-input {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  font-family: inherit;
+  font-size: 20px;
+  line-height: 1.5em;
+  width: 300px;
+  text-decoration: none;
+  outline: none;
+  border: 3px solid rgb(70, 70, 70);
+}
+
+.new-game {
+  outline: none;
+  font-family: inherit;
+  background: rgb(171, 171, 171);
+  color: #333;
+  font-size: 20px;
+  margin-top: 30px;
+  width: 250px;
+  height: 60px;
+  border: 5px solid #299114;
+  transition: 0.5s;
+}
+
+.new-game:hover {
+  cursor: pointer;
+  color: #299114;
+  border: 5px solid #333;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 40px;
+  color: rgb(186, 186, 186);
+  transition: 0.5s;
+  z-index: 3;
+}
+
+#footer a {
+  text-decoration: none;
+  color: rgb(186, 186, 186);
+}
+
+#footer a:hover {
+  color: #fff;
+}
+
+.git {
+  margin: -5px 0 0 10px;
+}
+
+.git img {
+  filter: invert(70%);
+}
+
+.git img:hover {
+  filter: invert(100%);
+}
+
+.active {
+  animation-name: blink;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes blink {
+  0% {
+    background-color: rgb(68, 74, 110);
+  }
+  50% {
+    background-color: rgb(108, 117, 167);
+  }
+  100% {
+    background-color: rgb(68, 74, 110);
+  }
+}
+
+@keyframes flash {
+  0% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: rgb(108, 117, 167);
+  }
+  100% {
+    background-color: inherit;
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(-75%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@-webkit-keyframes slide-in {
+  0% {
+    transform: translateX(-75%);
+  }
+  100% {
+    -webkit-transform: translateX(0%);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-75%);
+  }
+}
+
+@-webkit-keyframes slide-out {
+  0% {
+    -webkit-transform: translateX(0%);
+  }
+  100% {
+    -webkit-transform: translateX(-75%);
+  }
+}
+
+/* mobile styles removed */
